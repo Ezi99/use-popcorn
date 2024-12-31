@@ -4,11 +4,20 @@ import ErrorMessage from "../ErrorMessage";
 import StarRating from "../StarRating";
 import { KEY } from "../../config";
 
-export default function MovieDetails({ selectedID, onCloseMovie }) {
+export default function MovieDetails({
+  selectedID,
+  onCloseMovie,
+  onAddWatched,
+  watchedMovies,
+}) {
   const [movie, setMovie] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [userRating, setUserRating] = useState("");
+
+  const isWatched = watchedMovies.find(
+    (watchedMovie) => watchedMovie.imdbID === movie.imdbID
+  );
 
   const {
     Title: title,
@@ -22,6 +31,21 @@ export default function MovieDetails({ selectedID, onCloseMovie }) {
     Director: director,
     Genre: genre,
   } = movie;
+
+  function handleAddToList() {
+    const newWatchedMovIe = {
+      imdbID: selectedID,
+      title,
+      year,
+      poster,
+      imdbRating: Number(imdbRating),
+      runtime: Number(runtime.split(" ").at(0)),
+      userRating,
+    };
+
+    onAddWatched(newWatchedMovIe);
+    onCloseMovie();
+  }
 
   useEffect(
     function () {
@@ -80,7 +104,30 @@ export default function MovieDetails({ selectedID, onCloseMovie }) {
           </header>
           <section>
             <div className="rating">
-              <StarRating maxRating={10} size={24} />
+              {!isWatched ? (
+                <>
+                  <StarRating
+                    maxRating={10}
+                    size={24}
+                    onSetRating={setUserRating}
+                  />
+                  {userRating > 0 && (
+                    <button className="btn-add" onClick={handleAddToList}>
+                      + Add to list
+                    </button>
+                  )}
+                </>
+              ) : (
+                <p>
+                  You rated this movie{" "}
+                  {
+                    watchedMovies.find(
+                      (watchedMovie) => movie.imdbID === watchedMovie.imdbID
+                    ).userRating
+                  }
+                  <span>🌟</span>
+                </p>
+              )}
             </div>
             <p>
               <em>{plot}</em>
