@@ -58,6 +58,7 @@ export default function App() {
             throw new Error("Movie not found !");
           }
 
+          handleCloseMovie();
           setMovies(data.Search);
         } catch (error) {
           setError(error.message);
