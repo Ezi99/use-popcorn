@@ -13,8 +13,12 @@ import WatchedMovieList from "./components/movie/WatchedMovieList.js";
 import MovieDetails from "./components/movie/MovieDetails.js";
 
 export default function App() {
+  const [watched, setWatched] = useState(function () {
+    const localWatched = localStorage.getItem("watched");
+    const res = localWatched ? JSON.parse(localWatched) : [];
+    return res;
+  });
   const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState([]);
   const [query, setQuery] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -37,6 +41,13 @@ export default function App() {
       watched.filter((watchedMovie) => watchedMovie.imdbID !== id)
     );
   }
+
+  useEffect(
+    function () {
+      localStorage.setItem("watched", JSON.stringify(watched));
+    },
+    [watched]
+  );
 
   useEffect(
     function () {
