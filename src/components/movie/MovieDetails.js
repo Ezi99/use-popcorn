@@ -3,6 +3,7 @@ import Loader from "../Loader";
 import ErrorMessage from "../ErrorMessage";
 import StarRating from "../StarRating";
 import { KEY } from "../../config";
+import { useKeyDown } from "../../useKeyDown";
 
 export default function MovieDetails({
   selectedID,
@@ -87,20 +88,7 @@ export default function MovieDetails({
     [selectedID]
   );
 
-  useEffect(
-    function () {
-      function callback(event) {
-        if (event.code === "Escape") {
-          onCloseMovie();
-        }
-      }
-
-      document.addEventListener("keydown", callback);
-
-      return () => document.removeEventListener("keydown", callback);
-    },
-    [onCloseMovie]
-  );
+  useKeyDown("Escape", onCloseMovie);
 
   useEffect(
     function () {
